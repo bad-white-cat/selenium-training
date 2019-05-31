@@ -1,10 +1,11 @@
 const { By, until } = require('selenium-webdriver');
-const liteCartPage = require('./liteCartPage');
 
-class adminPage extends liteCartPage {
+
+class adminPage {
   constructor (driver) {
-    super(driver);
-    this.loginPath = `${this.host}admin/login.php`;
+    this.driver = driver;
+    this.host = 'http://localhost/litecart/'
+    this.timeout = 10000
   }
 
   getUserNameField() {
@@ -17,6 +18,11 @@ class adminPage extends liteCartPage {
 
   getSubmitButton() {
     return this.driver.findElement(By.name('login'));
+  }
+
+  async navigateToPage(page) {
+    const goal = await driver.wait(until.elementLocated(By.xpath(`//span[contains (text(),'${page}')]`)), this.timeout);
+    await goal.click();
   }
 
   async login (username = 'Admin', password = '123') {
