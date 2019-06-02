@@ -15,7 +15,7 @@ describe('Countries page:', function () {
   });
 
   it('countries should be in alphabet order', async function() {
-    await Page.login();
+    await Page.loginToAdmin();
     await Page.navigateToPage('Countries');
     const countriesElements = await Page.getCountriesList();
     const countriesList = await Promise.all(countriesElements.map(country => country.getText()));

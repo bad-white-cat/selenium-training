@@ -22,6 +22,12 @@ class adminPage {
     return this.driver.wait(until.elementLocated(By.css(`h1`)), params.timeout);
   }
 
+  async navigateToShop() {
+    const toShop = await this.driver.wait(until.elementLocated(By.css(`div.header a[title*="Catalog"]`)), params.timeout);
+    await toShop.click();
+    await this.driver.wait(until.elementLocated(By.id('site-menu')), 7000);
+  }
+
   async navigateToPage(page) {
     const goal = await this.driver.wait(until.elementLocated(By.xpath(`//span[contains (text(),'${page}')]`)), params.timeout);
     await goal.click();
@@ -32,10 +38,10 @@ class adminPage {
   }
 
   checkSidebarSubElements() {
-    return this.driver.findElements(by.css())
+    return this.driver.findElements(By.css('ul.docs'));
   }
 
-  async login (username = params.login, password = params.password) {
+  async loginToAdmin (username = params.login, password = params.password) {
     await this.driver.get(`${params.host}${params.urls.login}`);
     await this.getUserNameField().sendKeys(username);
     await this.getUserPasswordField().sendKeys(password);
