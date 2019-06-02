@@ -3,12 +3,13 @@
   "version": "1.0.0",
   "description": "selenium training tasks",
   "scripts": {
-    "test": "mocha --timeout 20000 specs/*-spec.js"
+    "test": "mocha --timeout 20000 specs/admin-spec.js"
   },
   "author": "Olga Potapova",
   "license": "ISC",
   "dependencies": {
     "chai": "4.2.0",
+    "chai-sorted": "^0.2.0",
     "mocha": "6.1.4",
     "selenium-webdriver": "~4.0.0-alpha"
   }

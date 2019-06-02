@@ -1,13 +1,18 @@
 const { By, until } = require('selenium-webdriver');
 const adminPage = require('./adminPage');
 
-class countriesPage extends liteCartPage {
+class countriesPage extends adminPage {
   constructor (driver) {
     super(driver);
-    this.countriesPath = `${this.host}admin/?app=countries&doc=countries`;
   }
 
-  
+  getCountriesRows() {
+    return this.driver.findElements(By.xpath('//form[@name="countries_form"]//tr[contains(@class,"row")]'));
+  }
+
+  getCountriesList() {
+    return this.driver.findElements(By.xpath('//form[@name="countries_form"]//tr[contains(@class,"row")]//a[not(@title)]'));
+  }
 
 }
 
