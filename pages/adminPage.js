@@ -33,12 +33,12 @@ class adminPage {
     await goal.click();
   }
 
-  async getSidebarElements() {
-    return this.driver.findElements(By.css('#box-apps-menu-wrapper span.name'));
+  getSidebarElements() {
+    return this.driver.findElements(By.css('#app- > a span.name'));
   }
 
-  checkSidebarSubElements() {
-    return this.driver.findElements(By.css('ul.docs'));
+  getSidebarSubElements() {
+    return this.driver.findElements(By.css('ul.docs span.name'));
   }
 
   async loginToAdmin (username = params.login, password = params.password) {

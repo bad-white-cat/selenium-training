@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "selenium training tasks",
   "scripts": {
-    "test": "mocha --timeout 20000 specs/*-spec.js"
+    "test": "mocha --timeout 50000 specs/*-spec.js"
   },
   "author": "Olga Potapova",
   "license": "ISC",

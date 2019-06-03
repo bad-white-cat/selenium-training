@@ -28,13 +28,20 @@ describe('Administration page:', function () {
   it('each page should have title', async function() {
     await AdminPage.loginToAdmin();
     let menuElements = await AdminPage.getSidebarElements();
+
     for (let i = 0; i < menuElements.length; i+=1) {
       await menuElements[i].click();
-      const subElements = await AdminPage.getSidebarElements();
 
-      subElements.length == 0 ? expect(await menuElements[i].getText()).to.equal(await AdminPage.getHeading().getText()) :
-      expect(await AdminPage.getHeading()).to.exist;
-
+      if(subElements.length > 0) {
+        for (let j = 0; j < subElements.length; j+=1) {
+          await subElements[j].click();
+          subElements = await AdminPage.getSidebarSubElements();
+          expect(await AdminPage.getHeading()).to.exist;
+        }
+      } else {
+        expect(await AdminPage.getHeading()).to.exist;
+      }
+      
       menuElements = await AdminPage.getSidebarElements();
     }
   })
