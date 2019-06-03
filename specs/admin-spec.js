@@ -32,6 +32,8 @@ describe('Administration page:', function () {
     for (let i = 0; i < menuElements.length; i+=1) {
       await menuElements[i].click();
 
+      let subElements = await AdminPage.getSidebarSubElements();
+
       if(subElements.length > 0) {
         for (let j = 0; j < subElements.length; j+=1) {
           await subElements[j].click();
@@ -41,7 +43,6 @@ describe('Administration page:', function () {
       } else {
         expect(await AdminPage.getHeading()).to.exist;
       }
-      
       menuElements = await AdminPage.getSidebarElements();
     }
   })
