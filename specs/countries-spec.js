@@ -1,4 +1,4 @@
-const { Builder, By } = require('selenium-webdriver');
+const { Builder } = require('selenium-webdriver');
 const page = require('../pages/countriesPage.js');
 
 const chai = require("chai"),
@@ -30,7 +30,7 @@ describe('Countries page:', function () {
     1) на странице http://localhost/litecart/admin/?app=countries&doc=countries
     б) для тех стран, у которых количество зон отлично от нуля -- открыть страницу этой страны и там проверить, что зоны расположены в алфавитном порядке
   */
-  it('geo zones should be in alphabet order', async function() {
+  it('geozones should be in alphabet order if there are ones', async function() {
     await Page.loginToAdmin();
     await Page.navigateToPage('Countries');
 

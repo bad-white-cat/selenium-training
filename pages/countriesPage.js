@@ -1,4 +1,4 @@
-const { By, until } = require('selenium-webdriver');
+const { By } = require('selenium-webdriver');
 const adminPage = require('./adminPage');
 
 class countriesPage extends adminPage {
