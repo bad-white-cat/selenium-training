@@ -23,7 +23,6 @@ describe('Countries page:', function () {
     await Page.navigateToPage('Countries');
     const countriesElements = await Page.getCountriesList();
     const countriesList = await Promise.all(countriesElements.map(country => country.getText()));
-
     expect(countriesList).to.be.sorted();
   });
 
@@ -31,43 +30,28 @@ describe('Countries page:', function () {
     1) на странице http://localhost/litecart/admin/?app=countries&doc=countries
     б) для тех стран, у которых количество зон отлично от нуля -- открыть страницу этой страны и там проверить, что зоны расположены в алфавитном порядке
   */
-  it.only('geo zones should be in alphabet order', async function() {
+  it('geo zones should be in alphabet order', async function() {
     await Page.loginToAdmin();
     await Page.navigateToPage('Countries');
-    const countriesRows = await Page.getCountriesRows();
+
+    let countriesRows = await Page.getCountriesRows();
+
+    const zoneIndexesToCheck = (await Promise.all(countriesRows.map(
+      row => Page.getZoneNumber(row) //have array of elements of geozones 
+      .then(zoneNumber => zoneNumber.getText())))) //have an array of numbers of geo zones in table rows
+      .reduce((acc, row, index) => row > 0 ? [...acc, index] : acc, []) //have array of indexes of rows, where geozones > 0
     
-    /*for (let row of countriesRows) {
-      const zone = await row.findElement(By.xpath('.//td[6]'));
-      const number = await zone.getText();
-      console.log(number);
-    }*/
+    for (let i of zoneIndexesToCheck) {
+      const countryToCheck = await Page.getCountryLink(countriesRows[i]);
+      await countryToCheck.click();
+      
+      const geoZonesList = await Page.getGeoZoneList();
+      const zonesList = await Promise.all(geoZonesList.map(zone => zone.getText()));
+      expect(zonesList).to.be.sorted();
 
-    const filterCountries = async country => {
-      const zone = await country.findElement(By.xpath('.//td[6]'));
-      const number = await zone.getText();
-      return number > 0;
+      await Page.navigateToPage('Countries');
+      countriesRows = await Page.getCountriesRows();
     }
-
-    const countriesToCheck = await Promise.all(countriesRows.filter(filterCountries));
-    console.log(countriesToCheck.length);
-
-    /*const list = [] //...an array filled with values
-
-const functionWithPromise = item => { //a function that returns a promise
-  return Promise.resolve('ok')
-}
-
-const anAsyncFunction = async item => {
-  return await functionWithPromise(item)
-}
-
-const getData = async () => {
-  return await Promise.all(list.map(item => anAsyncFunction(item)))
-}
-
-const data = getData()
-console.log(data)
-*/
   });
 
   after(() => driver.quit());

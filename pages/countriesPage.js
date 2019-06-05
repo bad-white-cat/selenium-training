@@ -15,7 +15,17 @@ class countriesPage extends adminPage {
   }
 
   getZoneNumber(el = this.driver) {
-    return el.findElement(By.xpath('.//td[5]'));
+    return el.findElement(By.xpath('.//td[6]'));
+  }
+
+  getCountryLink(el = this.driver) {
+    return el.findElement(By.xpath('.//a[contains(@href,"doc=edit_country") and @title="Edit"]'))
+  }
+
+  async getGeoZoneList() {
+    const zones = await this.driver.findElements(By.xpath('//table[@id="table-zones"]//tr[not(@class="header")]/td[3]'));
+    zones.pop();
+    return zones;
   }
 }
 
