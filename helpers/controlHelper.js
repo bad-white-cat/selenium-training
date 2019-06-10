@@ -1,3 +1,5 @@
+const { Key } = require('selenium-webdriver');
+
 const controlHelper = {
 
     selectDropdownValue: (driver, element, text) => {
@@ -8,6 +10,22 @@ const controlHelper = {
             "{ select.options[i].selected = true; } }" + 
             "arguments[0].dispatchEvent(new Event('change'))",
             element, text);
+    },
+
+    setCheckboxChecked: (element) => {
+        return element.isSelected().then(result => {
+            return result ? element : element.click();
+        })
+    },
+
+    clearAndFillNumeric: (element, number) => {
+        return element.getAttribute("value")
+        .then(res => {
+            for(let i = 0; i < res.length; i+= 1) {
+                element.sendKeys(Key.DELETE)  
+            }
+        })
+        .then(() => element.sendKeys(number));
     }
 }
 
