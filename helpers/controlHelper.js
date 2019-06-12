@@ -18,7 +18,7 @@ const controlHelper = {
         })
     },
 
-    clearAndFillNumeric: (element, number) => {
+    clearAndFill: (element, number) => {
         return element.getAttribute("value")
         .then(res => {
             for(let i = 0; i < res.length; i+= 1) {

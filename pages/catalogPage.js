@@ -1,7 +1,7 @@
 const { By, until } = require('selenium-webdriver');
 const params = require('../params.js');
 const adminPage = require('./adminPage');
-const { setCheckboxChecked, clearAndFillNumeric } = require('../helpers/controlHelper.js');
+const { setCheckboxChecked, clearAndFill } = require('../helpers/controlHelper.js');
 
 class catalogPage extends adminPage {
   constructor (driver) {
@@ -39,11 +39,11 @@ class catalogPage extends adminPage {
 
     if(data.defaultCat) {
         await this.driver.findElement(By.css(`#tab-general select[name="default_category_id"]`)).click();
-        await this.driver.findElement(By.xpath(`//option[contains(text(),"${data.defaultCat}")]`))
+        await this.driver.wait(until.elementLocated(By.xpath(`//option[contains(text(),"${data.defaultCat}")]`))).click();
     }
 
     if(data.quantity) {
-        await clearAndFillNumeric(await this.driver.findElement(By.css(`#tab-general input[name="quantity"]`)), data.quantity);
+        await clearAndFill(await this.driver.findElement(By.css(`#tab-general input[name="quantity"]`)), data.quantity);
     }
 
     if(data.picture) {
@@ -61,8 +61,8 @@ class catalogPage extends adminPage {
 
   async fillInformationTab(data) {
     if(data.manufacturer) {
-      await this.driver.findElement(By.css(`#tab-information select[name="manufacturer_id"]`)).click();
-      await this.driver.findElement(By.xpath(`//option[contains(text(),"${data.manufacturer}")]`)).click();
+      await this.driver.wait(until.elementLocated(By.css(`#tab-information select[name="manufacturer_id"]`))).click();
+      await this.driver.wait(until.elementLocated(By.xpath(`//option[contains(text(),"${data.manufacturer}")]`))).click();
     }
 
     if(data.keywords) {
@@ -88,28 +88,28 @@ class catalogPage extends adminPage {
 
   async fillPricesTab(data) {
     if(data.purchasePrice) {
-        await clearAndFillNumeric(await this.driver.findElement(By.css(`#tab-prices input[name="purchase_price"]`)), data.purchasePrice);
+        await clearAndFill(await this.driver.findElement(By.css(`#tab-prices input[name="purchase_price"]`)), data.purchasePrice);
     }
 
     if(data.currency) {
         await this.driver.findElement(By.css(`#tab-prices select[name="purchase_price_currency_code"]`)).click();
-        await this.driver.findElement(By.xpath(`//option[contains(text(),"${data.currency}")]`)).click();
+        await this.driver.wait(until.elementLocated(By.xpath(`//option[contains(text(),"${data.currency}")]`))).click();
     }
 
     if(data.priceUSD) {
-        await this.driver.findElement(By.css(`#tab-prices input[name="prices\[USD\]"]`)).clear().sendKeys(data.priceUSD);
+        await clearAndFill(await this.driver.findElement(By.css(`#tab-prices input[name="prices\[USD\]"]`)), data.priceUSD);
     }
 
     if(data.taxUSD) {
-        await clearAndFillNumeric(await this.driver.findElement(By.css(`#tab-prices input[name="gross_prices\[USD\]"]`)), data.taxUSD);
+        await clearAndFill(await this.driver.findElement(By.css(`#tab-prices input[name="gross_prices\[USD\]"]`)), data.taxUSD);
     }
 
     if(data.priceEuros) {
-        await this.driver.findElement(By.css(`#tab-prices input[name="prices\[USD\]"]`)).clear().sendKeys(data.priceEuros);
+        await clearAndFill(await this.driver.findElement(By.css(`#tab-prices input[name="prices\[EUR\]"]`)), data.priceEuros);
     }
 
     if(data.taxEuros) {
-        await clearAndFillNumeric(await this.driver.findElement(By.css(`#tab-prices input[name="gross_prices\[EUR\]"]`)), data.taxEuros);
+        await clearAndFill(await this.driver.findElement(By.css(`#tab-prices input[name="gross_prices\[EUR\]"]`)), data.taxEuros);
     }
   }
 
