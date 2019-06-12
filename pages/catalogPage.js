@@ -62,7 +62,7 @@ class catalogPage extends adminPage {
   async fillInformationTab(data) {
     if(data.manufacturer) {
       await this.driver.findElement(By.css(`#tab-information select[name="manufacturer_id"]`)).click();
-      await this.driver.findElement(By.xpath(`//option[contains(text(),"${data.manufacturer}")]`))
+      await this.driver.findElement(By.xpath(`//option[contains(text(),"${data.manufacturer}")]`)).click();
     }
 
     if(data.keywords) {
@@ -93,7 +93,7 @@ class catalogPage extends adminPage {
 
     if(data.currency) {
         await this.driver.findElement(By.css(`#tab-prices select[name="purchase_price_currency_code"]`)).click();
-        await this.driver.findElement(By.xpath(`//option[contains(text(),"${data.currency}")]`))
+        await this.driver.findElement(By.xpath(`//option[contains(text(),"${data.currency}")]`)).click();
     }
 
     if(data.priceUSD) {

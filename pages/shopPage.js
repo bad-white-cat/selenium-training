@@ -47,6 +47,31 @@ class shopPage extends adminPage {
     return this.driver.findElement(By.css('h1'));
   }
 
+  async addToCart() {
+    const sizeSelect = await this.driver.findElements(By.css('select[name="options\[Size\]"]'));
+    if(sizeSelect.length > 0) {
+      await sizeSelect[0].click();
+      await this.driver.sleep(2000);
+      const sizeOptions = await sizeSelect[0].findElements(By.css('option'));
+      await this.driver.sleep(2000);
+      await sizeOptions[1].click();
+    }
+    await this.driver.findElement(By.css('button[name="add_cart_product"]')).click();
+    await this.waitForCartUpdated(await this.getQuantityInCart().getText());
+  }
+
+  async waitForCartUpdated(initial, count = params.timeout / 1000) {
+    let changed = await this.getQuantityInCart().getText();
+    if (changed === initial) {
+      if(count > 0) {
+        await this.driver.sleep(1000);
+        await this.waitForCartUpdated(initial, count - 1);
+      } else {
+        throw (`Cart wasn\'t updated during ${count} seconds.`)
+      }
+    }
+  }
+
   //customer
   async regCustomer(data) {
     await this.get();
@@ -83,6 +108,29 @@ class shopPage extends adminPage {
 
   getSuccessMessage() {
     return this.driver.findElement(By.css('div.success'));
+  }
+
+  getQuantityInCart() {
+    return this.driver.findElement(By.css('div#cart span.quantity'));
+  }
+
+  openCart() {
+    return this.driver.findElement(By.css('div#cart a.content')).click();
+  }
+
+  removeFromCartButton() {
+    return this.driver.findElements(By.css('#box-checkout-cart button[name="remove_cart_item"]'));
+  }
+
+  stopCartAnimation() {
+    const shortcuts = this.driver.wait(until.elementsLocated(By.css('li.shortcut')));
+    if (shortcuts.length > 0) {
+      shortcuts[0].click();
+    }
+  }
+
+  emptyMessage() {
+    return this.driver.wait(until.elementLocated(By.css('#checkout-cart-wrapper em')));
   }
 }
 

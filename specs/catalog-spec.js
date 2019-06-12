@@ -23,7 +23,7 @@ describe('Catalog page:', function () {
     После сохранения товара нужно убедиться, что он появился в каталоге (в админке). Клиентскую часть магазина можно не проверять.
     Можно оформить сценарий либо как тест, либо как отдельный исполняемый файл.
  */
-  it.only('should add a product to the catalog', async function() {
+  it('should add a product to the catalog', async function() {
     await Page.loginToAdmin();
     await Page.navigateToPage('Catalog');
     await Page.addNewProduct();
