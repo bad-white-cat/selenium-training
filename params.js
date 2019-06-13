@@ -1,7 +1,7 @@
 const params = {
     login: "Admin",
     password: "123",
-    host: /*'http://localhost/litecart/', */'http://litecart.stqa.ru/',
+    host: 'http://localhost/litecart/',/*'http://litecart.stqa.ru/',*/
 
     urls: {
         admin: 'admin',

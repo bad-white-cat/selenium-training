@@ -1,5 +1,6 @@
 const { Builder } = require('selenium-webdriver');
 const page = require('../pages/countriesPage.js');
+const { waitForNewWindowOpen } = require('../helpers/controlHelper.js');
 
 const chai = require("chai"),
 expect = chai.expect; // preference and tested with expect
@@ -51,6 +52,34 @@ describe('Countries page:', function () {
 
       await Page.navigateToPage('Countries');
       countriesRows = await Page.getCountriesRows();
+    }
+  });
+
+  /* Homework #14
+    1) зайти в админку
+    2) открыть пункт меню Countries (или страницу http://localhost/litecart/admin/?app=countries&doc=countries)
+    3) открыть на редактирование какую-нибудь страну или начать создание новой
+    4) возле некоторых полей есть ссылки с иконкой в виде квадратика со стрелкой -- они ведут на внешние страницы и открываются в новом окне, именно это и нужно проверить.
+
+    Конечно, можно просто убедиться в том, что у ссылки есть атрибут target="_blank". Но в этом упражнении требуется именно кликнуть по ссылке, чтобы она открылась в новом окне, потом переключиться в новое окно, закрыть его, вернуться обратно, и повторить эти действия для всех таких ссылок.
+
+    Не забудьте, что новое окно открывается не мгновенно, поэтому требуется ожидание открытия окна. */
+  it('should open link in new tab', async function() {
+    await Page.loginToAdmin();
+    await Page.navigateToPage('Countries');
+    await Page.getAddNewCountryButton().click();
+    const countryPage = await driver.getWindowHandle();
+    let windows = await driver.getAllWindowHandles();
+    const links = await Page.getExternalLinks();
+    for (let link of links) {
+      await link.click();
+      const newTab = await waitForNewWindowOpen(driver, windows);
+      await driver.switchTo().window(...newTab);
+
+      expect(await driver.getTitle()).to.not.contain('My Store');
+      
+      await driver.close();
+      await driver.switchTo().window(countryPage);
     }
   });
 
