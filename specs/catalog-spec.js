@@ -9,7 +9,7 @@ describe('Catalog page:', function () {
   let Page;
 
   before(async function() {
-    driver = await new Builder().forBrowser('chrome').build();
+    driver = await new Builder().forBrowser('firefox').build();
     Page = await new page(driver);
   });
 
@@ -58,6 +58,28 @@ describe('Catalog page:', function () {
         taxEuros: 5
     });
     await Page.submitProduct();    
+  });
+
+  /* Homework #17
+  Сделайте сценарий, который проверяет, не появляются ли в логе браузера
+  сообщения при открытии страниц в учебном приложении, а именно -- страниц товаров в каталоге в административной панели.
+  Сценарий должен состоять из следующих частей:
+    1) зайти в админку
+    2) открыть каталог, категорию, которая содержит товары (страница http://localhost/litecart/admin/?app=catalog&doc=catalog&category_id=1)
+    3) последовательно открывать страницы товаров и проверять, не появляются ли в логе браузера сообщения (любого уровня)
+  */
+  it('should check browser logs are empty', async function() {
+    await Page.loginToAdmin();
+    await Page.navigateToPage('Catalog');
+    await Page.openCategory('Rubber Ducks');
+    let goodsInCategory = await Page.getAllGoodsInCategory();
+    for (let i = 0; i < goodsInCategory.length; i += 1) {
+      await goodsInCategory[i].click();
+      const logs = await driver.manage().logs().get("browser");
+      expect(logs.length).to.equal(0);
+      await Page.closeProduct();
+      goodsInCategory = await Page.getAllGoodsInCategory();
+    }
   });
 
   after(() => driver.quit());

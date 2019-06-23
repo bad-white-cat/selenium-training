@@ -117,6 +117,18 @@ class catalogPage extends adminPage {
       await this.driver.findElement(By.css(`button[name="save"]`)).click();
       await this.driver.wait(until.elementLocated(By.css('div.success')), params.timeout);
   }
+
+  closeProduct() {
+    return this.driver.findElement(By.css(`button[name="cancel"]`)).click();
+  }
+
+  openCategory(name) {
+    return this.driver.findElement(By.xpath(`//form[@name='catalog_form']//a[contains(text(),'${name}')]`)).click();
+  }
+
+  getAllGoodsInCategory() {
+    return this.driver.findElements(By.xpath(`//img[contains(@style,'margin-left: 32px;')]/following-sibling::a`));
+  }
 }
 
 module.exports = catalogPage;
