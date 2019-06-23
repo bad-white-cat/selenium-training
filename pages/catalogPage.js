@@ -6,6 +6,7 @@ const { setCheckboxChecked, clearAndFill } = require('../helpers/controlHelper.j
 class catalogPage extends adminPage {
   constructor (driver) {
     super(driver);
+    this.submit = By.css(`button[name="save"]`);
   }
 
   addNewProduct() {
@@ -114,7 +115,7 @@ class catalogPage extends adminPage {
   }
 
   async submitProduct() {
-      await this.driver.findElement(By.css(`button[name="save"]`)).click();
+      await this.driver.findElement(this.submit).click();
       await this.driver.wait(until.elementLocated(By.css('div.success')), params.timeout);
   }
 
@@ -128,6 +129,10 @@ class catalogPage extends adminPage {
 
   getAllGoodsInCategory() {
     return this.driver.findElements(By.xpath(`//img[contains(@style,'margin-left: 32px;')]/following-sibling::a`));
+  }
+
+  waitForDetailsOpened() {
+      return this.driver.wait(until.elementLocated(this.submit));
   }
 }
 

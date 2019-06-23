@@ -3,13 +3,19 @@ const page = require('../pages/catalogPage.js');
 const { expect } = require("chai");
 const { getGuid } = require('../helpers/guidHelper.js');
 const path = require('path');
+const { writeFile, appendFile } = require('fs').promises;
 
 describe('Catalog page:', function () {
   let driver;
   let Page;
 
   before(async function() {
-    driver = await new Builder().forBrowser('firefox').build();
+    driver = await new Builder()
+      .withCapabilities({'log-args': [
+        'log-level=0'
+      ]})
+      .forBrowser('chrome')
+      .build();
     Page = await new page(driver);
   });
 
@@ -69,14 +75,19 @@ describe('Catalog page:', function () {
     3) последовательно открывать страницы товаров и проверять, не появляются ли в логе браузера сообщения (любого уровня)
   */
   it('should check browser logs are empty', async function() {
+
+    const pathToLog = path.resolve(__dirname, '../logs/browser-logs.txt');
+
+    await writeFile(pathToLog,'','utf-8');
     await Page.loginToAdmin();
     await Page.navigateToPage('Catalog');
     await Page.openCategory('Rubber Ducks');
     let goodsInCategory = await Page.getAllGoodsInCategory();
     for (let i = 0; i < goodsInCategory.length; i += 1) {
       await goodsInCategory[i].click();
+      await Page.waitForDetailsOpened();
       const logs = await driver.manage().logs().get("browser");
-      expect(logs.length).to.equal(0);
+      logs.forEach(async log => await appendFile(pathToLog, log, 'utf-8'));
       await Page.closeProduct();
       goodsInCategory = await Page.getAllGoodsInCategory();
     }
