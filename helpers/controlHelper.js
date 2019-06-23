@@ -1,4 +1,5 @@
 const { Key } = require('selenium-webdriver');
+const { timeout } = require('../params.js');
 
 const controlHelper = {
 
@@ -26,6 +27,18 @@ const controlHelper = {
             }
         })
         .then(() => element.sendKeys(number));
+    },
+
+    waitForNewWindowOpen: waitForNewWindowOpen = async (driver, oldWindows, count = timeout/1000) => {
+        let newWindows = await driver.getAllWindowHandles();
+        if(newWindows.length > oldWindows.length) {
+            return newWindows.filter(el => oldWindows.indexOf(el) < 0); //returns all new tabs appeared in []
+        }
+        else if (count > 0) {
+            await driver.sleep(1000);
+            return await this.waitForNewWindowOpen(driver, oldWindows, count - 1);
+        }
+        else throw `New tabs wasn\'t open during ${count} seconds`;
     }
 }
 

@@ -1,4 +1,4 @@
-const { By } = require('selenium-webdriver');
+const { By, until } = require('selenium-webdriver');
 const adminPage = require('./adminPage');
 
 class countriesPage extends adminPage {
@@ -20,6 +20,14 @@ class countriesPage extends adminPage {
 
   getCountryLink(el = this.driver) {
     return el.findElement(By.xpath('.//a[contains(@href,"doc=edit_country") and @title="Edit"]'))
+  }
+
+  getAddNewCountryButton() {
+    return this.driver.findElement(By.css('a.button'));
+  }
+
+  getExternalLinks() {
+    return this.driver.wait(until.elementsLocated(By.css('i.fa-external-link')));
   }
 
   async getGeoZoneList() {

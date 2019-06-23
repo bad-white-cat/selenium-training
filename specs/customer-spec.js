@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const { Builder } = require('selenium-webdriver');
+const { Builder, until } = require('selenium-webdriver');
 const page = require('../pages/shopPage.js');
 const { getGuid } = require('../helpers/guidHelper.js');
 
@@ -48,6 +48,41 @@ describe('Shop page:', function () {
 
     await Page.customerLogout();
     expect(await Page.getSuccessMessage().getText()).to.equal('You are now logged out.');
+  })
+
+  /*
+  Homework #13
+  Сделайте сценарий для добавления товаров в корзину и удаления товаров из корзины.
+    1) открыть главную страницу
+    2) открыть первый товар из списка
+    2) добавить его в корзину (при этом может случайно добавиться товар, который там уже есть, ничего страшного)
+    3) подождать, пока счётчик товаров в корзине обновится
+    4) вернуться на главную страницу, повторить предыдущие шаги ещё два раза, чтобы в общей сложности в корзине было 3 единицы товара
+    5) открыть корзину (в правом верхнем углу кликнуть по ссылке Checkout)
+    6) удалить все товары из корзины один за другим, после каждого удаления подождать, пока внизу обновится таблица
+ */
+  it('should add and remove items from cart', async function() {
+    await Page.get();
+
+    for (let i = 0; i < 3; i += 1) {
+      let itemToBuy = (await Page.getAllItems())[0];
+      await itemToBuy.click();
+      await Page.addToCart();
+      await Page.goHome()  
+    }
+    await Page.openCart();
+    
+    const removeEverythingFromCart = async () => {
+      let removeButton = await Page.removeFromCartButton();
+      if(removeButton.length > 0) {
+        await removeButton[0].click();
+        await driver.wait(until.stalenessOf(removeButton[0]));
+        return await removeEverythingFromCart();
+      } else return;
+    }
+
+    await removeEverythingFromCart();
+    expect(await Page.emptyMessage().getText()).to.equal('There are no items in your cart.');
   })
 
   after(() => driver.quit());
