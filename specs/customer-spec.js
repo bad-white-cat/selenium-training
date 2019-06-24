@@ -1,15 +1,18 @@
 const { expect } = require('chai');
 const { Builder, until } = require('selenium-webdriver');
-const page = require('../pages/shopPage.js');
+const shopPage = require('../pages/shopPage.js');
+const cartPage = require('../pages/cartPage.js');
 const { getGuid } = require('../helpers/guidHelper.js');
 
 describe('Shop page:', function () {
   let driver;
-  let Page;
+  let ShopPage;
+  let CartPage;
 
   before(async function() {
     driver = await new Builder().forBrowser('chrome').build();
-    Page = await new page(driver);
+    ShopPage = await new shopPage(driver);
+    CartPage = await new cartPage(driver);
   });
 
   /* Homework #11
@@ -37,17 +40,17 @@ describe('Shop page:', function () {
         phone: '123456789',
         password: '123'
     }
-    await Page.regCustomer(data);
-    expect(await Page.getSuccessMessage().getText()).to.equal('Your customer account has been created.');
+    await ShopPage.regCustomer(data);
+    expect(await ShopPage.getSuccessMessage().getText()).to.equal('Your customer account has been created.');
 
-    await Page.customerLogout();
-    expect(await Page.getSuccessMessage().getText()).to.equal('You are now logged out.');
+    await ShopPage.customerLogout();
+    expect(await ShopPage.getSuccessMessage().getText()).to.equal('You are now logged out.');
     
-    await Page.customerLogin(data.email, data.password);
-    expect(await Page.getSuccessMessage().getText()).to.equal(`You are now logged in as ${data.firstname} ${data.lastname}.`);
+    await ShopPage.customerLogin(data.email, data.password);
+    expect(await ShopPage.getSuccessMessage().getText()).to.equal(`You are now logged in as ${data.firstname} ${data.lastname}.`);
 
-    await Page.customerLogout();
-    expect(await Page.getSuccessMessage().getText()).to.equal('You are now logged out.');
+    await ShopPage.customerLogout();
+    expect(await ShopPage.getSuccessMessage().getText()).to.equal('You are now logged out.');
   })
 
   /*
@@ -61,28 +64,26 @@ describe('Shop page:', function () {
     5) открыть корзину (в правом верхнем углу кликнуть по ссылке Checkout)
     6) удалить все товары из корзины один за другим, после каждого удаления подождать, пока внизу обновится таблица
  */
+
+ /*
+  Homework #19
+  Переделайте созданный в задании 13 сценарий для добавления товаров в корзину и удаления товаров из корзины, чтобы он использовал многослойную архитектуру.
+  А именно, выделите вспомогательные классы для работы с главной страницей (откуда выбирается товар), для работы со страницей товара
+  (откуда происходит добавление товара в корзину), со страницей корзины (откуда происходит удаление), 
+  и реализуйте сценарий, который не напрямую обращается к операциям Selenium, а оперирует вышеперечисленными объектами-страницами.
+ */
   it('should add and remove items from cart', async function() {
-    await Page.get();
+    await ShopPage.get();
 
     for (let i = 0; i < 3; i += 1) {
-      let itemToBuy = (await Page.getAllItems())[0];
+      let itemToBuy = (await ShopPage.getAllItems())[0];
       await itemToBuy.click();
-      await Page.addToCart();
-      await Page.goHome()  
+      await ShopPage.addToCart();
+      await ShopPage.goHome()  
     }
-    await Page.openCart();
-    
-    const removeEverythingFromCart = async () => {
-      let removeButton = await Page.removeFromCartButton();
-      if(removeButton.length > 0) {
-        await removeButton[0].click();
-        await driver.wait(until.stalenessOf(removeButton[0]));
-        return await removeEverythingFromCart();
-      } else return;
-    }
-
-    await removeEverythingFromCart();
-    expect(await Page.emptyMessage().getText()).to.equal('There are no items in your cart.');
+    await ShopPage.openCart();
+    await CartPage.removeEverythingFromCart();
+    expect(await CartPage.emptyMessage().getText()).to.equal('There are no items in your cart.');
   })
 
   after(() => driver.quit());

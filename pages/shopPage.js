@@ -117,21 +117,6 @@ class shopPage extends adminPage {
   openCart() {
     return this.driver.findElement(By.css('div#cart a.content')).click();
   }
-
-  removeFromCartButton() {
-    return this.driver.findElements(By.css('#box-checkout-cart button[name="remove_cart_item"]'));
-  }
-
-  stopCartAnimation() {
-    const shortcuts = this.driver.wait(until.elementsLocated(By.css('li.shortcut')));
-    if (shortcuts.length > 0) {
-      shortcuts[0].click();
-    }
-  }
-
-  emptyMessage() {
-    return this.driver.wait(until.elementLocated(By.css('#checkout-cart-wrapper em')));
-  }
 }
 
 module.exports = shopPage;
