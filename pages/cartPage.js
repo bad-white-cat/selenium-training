@@ -1,7 +1,7 @@
 const { By, until } = require('selenium-webdriver');
-const catalogPage = require('./catalogPage');
+const shopPage = require('./shopPage');
 
-class cartPage extends catalogPage {
+class cartPage extends shopPage {
   constructor (driver) {
     super(driver);
   }
